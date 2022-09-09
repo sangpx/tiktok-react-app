@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from '../Header/Header.module.scss';
 import images from '~/Assets/images';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { forwardRef } from 'react';
+import React from 'react';
 import {
     faCircleXmark,
     faSpinner,
@@ -13,8 +13,15 @@ import {
     faQuestionCircle,
     faKeyboard,
     faSignIn,
+    faCloudUpload,
+    faUser,
+    faCoins,
+    faGear,
+    faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
-import Tippy from '@tippyjs/react/headless';
+import Tippy from '@tippyjs/react';
+import HeadlessTippy from '@tippyjs/react/headless';
+import 'tippy.js/dist/tippy.css';
 
 import Button from '~/components/Button';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
@@ -50,6 +57,8 @@ function Header() {
     //state ket qua search
     const [searchResult, setSearchResult] = useState([]);
 
+    const currentUser = true;
+
     useEffect(() => {
         setTimeout(() => {
             //call API
@@ -69,6 +78,15 @@ function Header() {
         }
     };
 
+    //user Menu
+    const userMenu = [
+        { icon: <FontAwesomeIcon icon={faUser} />, title: 'View Profile', to: '@hoaa' },
+        { icon: <FontAwesomeIcon icon={faCoins} />, title: 'Get Coins', to: '/getcoin' },
+        { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/settings' },
+        ...MENU_ITEMS,
+        { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', to: '/logout', separate: true },
+    ];
+
     return (
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
@@ -78,54 +96,73 @@ function Header() {
                 </div>
 
                 {/* input Search */}
-                <span>
-                    <Tippy
-                        interactive
-                        visible={searchResult.length > 0}
-                        render={(attrs) => (
-                            <div tabIndex="-1" {...attrs} className={cx('search-result')}>
-                                <PopperWrapper>
-                                    <h3 className={cx('search-title')}>Accounts</h3>
-                                    <AccountItem />
-                                    <AccountItem />
-                                    <AccountItem />
-                                </PopperWrapper>
-                            </div>
-                        )}
-                    >
-                        <div className={cx('search')}>
-                            <input placeholder="Search accounts and videos" spellCheck={false} />
-                            <button className={cx('clear')}>
-                                {/* Clear */}
-                                <FontAwesomeIcon icon={faCircleXmark} />
-                            </button>
-
-                            {/* Loading */}
-                            <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />
-
-                            <button className={cx('search-btn')}>
-                                {/* search icon */}
-                                <FontAwesomeIcon icon={faMagnifyingGlass} />
-                            </button>
+                <HeadlessTippy
+                    interactive
+                    visible={searchResult.length > 0}
+                    render={(attrs) => (
+                        <div tabIndex="-1" {...attrs} className={cx('search-result')}>
+                            <PopperWrapper>
+                                <h3 className={cx('search-title')}>Accounts</h3>
+                                <AccountItem />
+                                <AccountItem />
+                                <AccountItem />
+                            </PopperWrapper>
                         </div>
-                    </Tippy>
-                </span>
-
-                {/* action */}
-                <div className={cx('action')}>
-                    {/* Button Upload */}
-                    <Button text>Upload</Button>
-                    {/* Button Log in */}
-                    <Button primary leftIcon={<FontAwesomeIcon icon={faSignIn} />}>
-                        Log in
-                    </Button>
-
-                    <Menu items={MENU_ITEMS} onChange={handleMenuChange}>
-                        <button className={cx('more-btn')}>
-                            <FontAwesomeIcon icon={faEllipsisVertical} />
+                    )}
+                >
+                    <div className={cx('search')}>
+                        <input placeholder="Search accounts and videos" spellCheck={false} />
+                        <button className={cx('clear')}>
+                            {/* Clear */}
+                            <FontAwesomeIcon icon={faCircleXmark} />
                         </button>
+
+                        {/* Loading */}
+                        <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />
+
+                        <button className={cx('search-btn')}>
+                            {/* search icon */}
+                            <FontAwesomeIcon icon={faMagnifyingGlass} />
+                        </button>
+                    </div>
+                </HeadlessTippy>
+
+                <div className={cx('action')}>
+                    {currentUser ? (
+                        <>
+                            <Tippy delay={[0, 200]} content="Upload Video" placement="bottom">
+                                <button className={cx('action-btn')}>
+                                    <FontAwesomeIcon icon={faCloudUpload} />
+                                </button>
+                            </Tippy>
+                        </>
+                    ) : (
+                        <>
+                            {/* Button Upload */}
+                            <Button text>Upload</Button>
+                            {/* Button Log in */}
+                            <Button primary leftIcon={<FontAwesomeIcon icon={faSignIn} />}>
+                                Log in
+                            </Button>
+                        </>
+                    )}
+
+                    <Menu items={currentUser ? userMenu : MENU_ITEMS} onChange={handleMenuChange}>
+                        {currentUser ? (
+                            <img
+                                src="https://images7.alphacoders.com/108/1087685.jpg"
+                                className={cx('user-avatar')}
+                                alt="Nguyen Van A"
+                            />
+                        ) : (
+                            <button className={cx('more-btn')}>
+                                <FontAwesomeIcon icon={faEllipsisVertical} />
+                            </button>
+                        )}
                     </Menu>
                 </div>
+
+                {/* action */}
             </div>
         </header>
     );
