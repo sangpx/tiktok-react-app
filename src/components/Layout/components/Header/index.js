@@ -7,13 +7,11 @@ import React from 'react';
 import {
     faCircleXmark,
     faSpinner,
-    faMagnifyingGlass,
     faEllipsisVertical,
     faEarthAsia,
     faQuestionCircle,
     faKeyboard,
     faSignIn,
-    faCloudUpload,
     faUser,
     faCoins,
     faGear,
@@ -27,6 +25,8 @@ import Button from '~/components/Button';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountItem from '~/components/AccountItem';
 import Menu from '~/components/Popper/Menu';
+import { SearchIcon, UploadIcon } from '../../../Icons';
+import Image from '~/components/Image';
 
 const MENU_ITEMS = [
     {
@@ -122,7 +122,7 @@ function Header() {
 
                         <button className={cx('search-btn')}>
                             {/* search icon */}
-                            <FontAwesomeIcon icon={faMagnifyingGlass} />
+                            <SearchIcon />
                         </button>
                     </div>
                 </HeadlessTippy>
@@ -130,9 +130,9 @@ function Header() {
                 <div className={cx('action')}>
                     {currentUser ? (
                         <>
-                            <Tippy delay={[0, 200]} content="Upload Video" placement="bottom">
+                            <Tippy delay={[0, 50]} content="Upload Video" placement="bottom">
                                 <button className={cx('action-btn')}>
-                                    <FontAwesomeIcon icon={faCloudUpload} />
+                                    <UploadIcon />
                                 </button>
                             </Tippy>
                         </>
@@ -149,7 +149,7 @@ function Header() {
 
                     <Menu items={currentUser ? userMenu : MENU_ITEMS} onChange={handleMenuChange}>
                         {currentUser ? (
-                            <img
+                            <Image
                                 src="https://images7.alphacoders.com/108/1087685.jpg"
                                 className={cx('user-avatar')}
                                 alt="Nguyen Van A"
