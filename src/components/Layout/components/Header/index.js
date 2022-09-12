@@ -25,7 +25,7 @@ import Button from '~/components/Button';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountItem from '~/components/AccountItem';
 import Menu from '~/components/Popper/Menu';
-import { SearchIcon, UploadIcon } from '../../../Icons';
+import { InboxIcon, MessageIcon, SearchIcon, UploadIcon } from '../../../Icons';
 import Image from '~/components/Image';
 
 const MENU_ITEMS = [
@@ -133,6 +133,19 @@ function Header() {
                             <Tippy delay={[0, 50]} content="Upload Video" placement="bottom">
                                 <button className={cx('action-btn')}>
                                     <UploadIcon />
+                                </button>
+                            </Tippy>
+
+                            <Tippy delay={[0, 50]} content="Message" placement="bottom">
+                                <button className={cx('action-btn')}>
+                                    <MessageIcon />
+                                </button>
+                            </Tippy>
+
+                            <Tippy delay={[0, 50]} content="Inbox" placement="bottom">
+                                <button className={cx('action-btn')}>
+                                    <InboxIcon />
+                                    <span className={cx('badge')}>12</span>
                                 </button>
                             </Tippy>
                         </>
