@@ -20,6 +20,9 @@ function Search() {
     //bulur ket qua
     const [showResult, setShowResult] = useState(true);
 
+    //state loading
+    const [loading, setLoading] = useState(false);
+
     //inputRef
     const inputRef = useRef();
 
@@ -31,11 +34,25 @@ function Search() {
     };
 
     useEffect(() => {
-        setTimeout(() => {
-            //call API
-            setSearchResult([1, 1, 1, 1, 1]);
-        }, 0);
-    }, []);
+        //call API
+
+        if (!searchValue.trim()) {
+            setSearchResult([]);
+            return;
+        }
+
+        setLoading(true);
+
+        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(searchValue)}&type=less`)
+            .then((res) => res.json())
+            .then((res) => {
+                setSearchResult(res.data);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }, [searchValue]);
 
     //handleHideResult
     const handleHideResult = () => {
@@ -52,9 +69,9 @@ function Search() {
                 <div tabIndex="-1" {...attrs} className={cx('search-result')}>
                     <PopperWrapper>
                         <h3 className={cx('search-title')}>Accounts</h3>
-                        <AccountItem />
-                        <AccountItem />
-                        <AccountItem />
+                        {searchResult.map((item) => (
+                            <AccountItem key={item.id} data={item} />
+                        ))}
                     </PopperWrapper>
                 </div>
             )}
@@ -71,7 +88,7 @@ function Search() {
                 />
 
                 {/* khi co searchValue thi moi hien button Clear */}
-                {!!searchValue && (
+                {!!searchValue && !loading && (
                     <button className={cx('clear')} onClick={handleClear}>
                         {/* Clear */}
                         <FontAwesomeIcon icon={faCircleXmark} />
@@ -79,7 +96,7 @@ function Search() {
                 )}
 
                 {/* Loading */}
-                {/* <FontAwesomeIcon className={cx('loading')} icon={faSpinner} /> */}
+                {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
 
                 <button className={cx('search-btn')}>
                     {/* search icon */}
