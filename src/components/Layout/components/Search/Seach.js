@@ -7,6 +7,7 @@ import classNames from 'classnames/bind';
 import styles from './Search.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState, useEffect, useRef } from 'react';
+import { useDebounce } from '~/Hook';
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +27,8 @@ function Search() {
     //inputRef
     const inputRef = useRef();
 
+    const debounce = useDebounce(searchValue, 500);
+
     //handleClear
     const handleClear = () => {
         setsearchValue('');
@@ -34,8 +37,6 @@ function Search() {
     };
 
     useEffect(() => {
-        //call API
-
         if (!searchValue.trim()) {
             setSearchResult([]);
             return;
@@ -43,7 +44,8 @@ function Search() {
 
         setLoading(true);
 
-        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(searchValue)}&type=less`)
+        //call API
+        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(debounce)}&type=less`)
             .then((res) => res.json())
             .then((res) => {
                 setSearchResult(res.data);
@@ -52,7 +54,7 @@ function Search() {
             .catch(() => {
                 setLoading(false);
             });
-    }, [searchValue]);
+    }, [debounce]);
 
     //handleHideResult
     const handleHideResult = () => {
