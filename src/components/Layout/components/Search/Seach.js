@@ -8,6 +8,7 @@ import styles from './Search.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState, useEffect, useRef } from 'react';
 import { useDebounce } from '~/Hook';
+import * as request from '~/utils/request';
 
 const cx = classNames.bind(styles);
 
@@ -45,15 +46,22 @@ function Search() {
         setLoading(true);
 
         //call API
-        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(debounce)}&type=less`)
-            .then((res) => res.json())
+        request
+            .get('users/search', {
+                params: {
+                    q: debounce,
+                    type: 'less',
+                },
+            })
             .then((res) => {
+                // console.log(res);
                 setSearchResult(res.data);
                 setLoading(false);
             })
             .catch(() => {
                 setLoading(false);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debounce]);
 
     //handleHideResult
