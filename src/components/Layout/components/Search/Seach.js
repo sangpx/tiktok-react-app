@@ -8,7 +8,7 @@ import styles from './Search.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState, useEffect, useRef } from 'react';
 import { useDebounce } from '~/Hook';
-import * as request from '~/utils/request';
+import * as searchServices from '~/apiServices/searchServices';
 
 const cx = classNames.bind(styles);
 
@@ -38,29 +38,20 @@ function Search() {
     };
 
     useEffect(() => {
-        if (!searchValue.trim()) {
+        if (!debounce.trim()) {
             setSearchResult([]);
             return;
         }
 
-        setLoading(true);
+        const fetchAPI = async () => {
+            setLoading(true);
+            const result = await searchServices.search(debounce);
+            setSearchResult(result);
+            setLoading(false);
+        };
 
-        //call API
-        request
-            .get('users/search', {
-                params: {
-                    q: debounce,
-                    type: 'less',
-                },
-            })
-            .then((res) => {
-                // console.log(res);
-                setSearchResult(res.data);
-                setLoading(false);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
+        fetchAPI();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debounce]);
 
